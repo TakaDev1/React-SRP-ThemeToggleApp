@@ -5,6 +5,7 @@ function App() {
   return (
     <>
       <div>
+        <h1>React-SRP-ThemeToggleApp</h1>
         <ThemeToggle />
       </div>
     </>
