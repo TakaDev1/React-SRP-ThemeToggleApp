@@ -6,7 +6,7 @@ const ThemeToggle = () => {
   const { theme, handleToggleTheme } = useTheme();
   return (
     <div>
-      <p>CurrentTheme: {theme}</p>
+      <p className="text-white">CurrentTheme: {theme}</p>
       <Button onClick={handleToggleTheme}>ChangeTheme</Button>
     </div>
   );
