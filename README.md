@@ -1,32 +1,146 @@
-# React + TypeScript + Vite
+# React-SRP-ThemeToggleApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Reactのカスタムフックを使用して、テーマ切り替え機能を実装した練習用アプリです。
 
-Currently, two official plugins are available:
+テーマの状態管理・切り替えロジックとUIコンポーネントを分離し、**SRP（Single Responsibility Principle：単一責任の原則）**を意識して設計しています。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 概要
 
-## React Compiler
+ライトモードとダークモードを切り替えられるシンプルなテーマ切り替えアプリです。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+テーマの状態管理と切り替え処理はカスタムフック `useTheme` に切り出し、`ThemeToggle` コンポーネントはUIの表示に集中させています。
 
-## Expanding the Oxlint configuration
+## 使用技術
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+* React
+* TypeScript
+* Tailwind CSS
+* shadcn/ui
+* Vite
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## 機能
+
+* ライトモード / ダークモードの切り替え
+* 現在のテーマの表示
+* shadcn/uiのButtonを使用したUI
+
+## プロジェクト構成
+
+```text
+src/
+├── components/
+│   ├── ui/
+│   │   ├── button.tsx
+│   └── ThemeToggle.tsx
+│
+├── hooks/
+│   └── useTheme.ts
+│
+├── types/
+│   └── Theme.ts
+│
+├── App.tsx
+├── index.css
+└── main.tsx
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## SRPによる責務分離
+
+### useTheme.ts
+
+テーマの状態と切り替えロジックを担当します。
+
+```text
+theme
+  ↓
+現在のテーマを管理
+
+handleToggleTheme()
+  ↓
+light ⇔ dark を切り替える
+```
+
+### ThemeToggle.tsx
+
+UIの表示を担当します。
+
+```text
+ThemeToggle
+├── 現在のテーマを表示
+└── テーマ切り替えボタンを表示
+```
+
+### Theme.ts
+
+テーマの型を定義します。
+
+```ts
+export type Theme = "light" | "dark";
+```
+
+## データフロー
+
+```text
+User
+ ↓
+Change Theme Button
+ ↓
+handleToggleTheme()
+ ↓
+useTheme
+ ↓
+setTheme()
+ ↓
+theme
+ ↓
+ThemeToggle
+ ↓
+UI更新
+```
+
+## UI
+
+テーマに応じてTailwind CSSのクラスを切り替えます。
+
+```text
+light
+↓
+明るい背景 + 暗い文字
+
+dark
+↓
+暗い背景 + 明るい文字
+```
+
+## 学習ポイント
+
+* カスタムフックによるロジックの分離
+* `useState` による状態管理
+* `"light" | "dark"` によるUnion型
+* Tailwind CSSによる条件付きスタイリング
+* shadcn/uiによるUIコンポーネントの利用
+* SRPを意識したコンポーネント設計
+
+## SRPの設計イメージ
+
+```text
+useTheme
+  ↓
+状態・ロジック
+
+ThemeToggle
+  ↓
+UI
+
+Theme
+  ↓
+型定義
+```
+
+それぞれの責務を分離することで、コンポーネント側のコードをシンプルにし、状態管理ロジックを再利用しやすい構成にしています。
+
+## まとめ
+
+このアプリでは、テーマ切り替えというシンプルな機能を題材に、**状態管理ロジックとUIを分離する設計**を実践しました。
+
+特にカスタムフック `useTheme` にテーマの状態と切り替え処理をまとめることで、`ThemeToggle` はUIの責務に集中できる構成になっています。
